@@ -135,6 +135,9 @@ public class Client {
         // bw.write("request_id: " + reqID + "\n");
         // bw.write("name: sherylyn\n");
         // bw.write("email: shersica1998@gmail.com\n");
+        // for(Product p : selectedList){
+        //     System.out.printf("%d ,\n", p.getId());
+        // }
         // bw.write("items: ");
         // bw.write("spent: ");
         // bw.write("remaining: ");
