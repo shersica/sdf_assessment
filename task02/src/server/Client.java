@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class Client {
     private static double price;
     private static double rating;
     private static Map<Integer, List<Product>> productMap = new HashMap<>();
-    private static List<Product> productList;
+    private static List<Product> productList = new ArrayList<>();
     
     public static void main(String[] args) throws Exception {
         // if (args.length < 0) {
@@ -55,11 +57,6 @@ public class Client {
         OutputStreamWriter ows = new OutputStreamWriter(os);
         BufferedWriter bw = new BufferedWriter(ows);
 
-
-        reqID = br.readLine().trim().split(":")[1];
-        itemCount = Integer.parseInt(br.readLine().trim().split(":")[1]);
-        budget = Double.parseDouble(br.readLine().trim().split(":")[1]);
-
         String line;
 
         while((line = br.readLine()) != null){
@@ -77,31 +74,58 @@ public class Client {
                 case "budget":
                     budget = Double.parseDouble(terms[1]);
                     break;
-                
-                case "prod_id":
-                    productList = new LinkedList<>();
-                    productMap.put(Integer.parseInt(terms[1]), productList);
+                case "prod_list":
+                case "prod_start":
                     break;
                 
-                case "prod_title":
-                    // productList.add(terms[1]);
-                    
-            
+                case "prod_id":
+                    id = Integer.parseInt(terms[1]);
+                    break;
+                
+                case "title":
+                    title = terms[1];
+                    break;
+
+                case "price":
+                    price = Double.parseDouble(terms[1]);
+                    break;
+
+                case "rating":
+                    rating = Double.parseDouble(terms[1]);
+                    break;
+
+                case "prod_end":
+                    productList.add(new Product(title, id, price, rating));                
+                    break;
+                
                 default:
                     break;
             }
 
+        }
 
+        for(Product p : productList){
+            System.out.println(p.getTitle());
         }
 
 
-        //productList.sort(Comparator
-        //               .comparingDouble(Product :: getRating).reversed()
-        //               .thencomparingInt(Product :: getPrice).reversed();
+        productList.sort(Comparator
+                      .comparingDouble(Product :: getRating).reversed()
+                      .thenComparingDouble(Product :: getPrice).reversed());
 
-        //int max = 0;
-        //for(Product p : productList){
-            // max = p.getRating();
+        
+        List<Product> selectedList = new ArrayList<>();
+        for(Product p : productList){
+            if(p.getPrice() > budget){
+                continue;
+            } 
+            else{
+                selectedList.add(p);
+                budget -= p.getPrice();
+            }
+        }
+
+
 
         
 
